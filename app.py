@@ -54,4 +54,4 @@ def display():
         return render_template("display_summary.html", summary="Choose a summary. 0 refers to the orignal text. \n Higher the number, shorter the summary.",
                                drop_options=[x for x in texts.keys()], summary_time=0)
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5000, debug=True)
