@@ -35,7 +35,7 @@ click==7.1.2
 cloudpickle @ file:///tmp/build/80754af9/cloudpickle_1594141588948/work
 clyent==1.2.2
 colorama==0.4.3
-conda==4.8.3
+conda==4.9.0
 conda-build==3.18.11
 conda-package-handling==1.7.0+0.g7c4a471.dirty
 conda-verify==3.4.2
