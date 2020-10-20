@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 import json
 import spacy
 from string import punctuation
+import en_core_web_lg
 
 def download():
     # nltk
