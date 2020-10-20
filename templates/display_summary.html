@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/display_summary.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="content">
+    <h1>Summarized Text</h1>
+
+    <div class="dropdown">
+        <form action="#" method="post">
+            <label for="summary_opts"><h4>Choose A Summary</h4></label>
+            <select name="summaries" id="summary_opts" class="custom-select" style="width:100px;">
+                {% for opt in drop_options %}
+                <option value={{opt}}>{{opt}}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-sm btn-dark">Select</button>
+        </form>
+    </div>
+
+    <h5>Reading Time: <u>{{summary_time}} mins</u> </h5>
+
+    <div id="text">
+        <p>{{summary}}</p>
+    </div>
+</div>
+{% endblock %}

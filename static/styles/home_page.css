@@ -1,0 +1,25 @@
+body{
+    background-color: #F4F6F9;
+}
+
+#content{
+    margin: 200px auto;
+    text-align: center;
+    width: 50%;
+}
+
+h3{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.btn-lg{
+    margin: 10px 10px;
+}
+
+img{
+    margin-top: 20px;
+    margin-bottom: 10px;
+    width: 300px;
+    height:auto;
+}

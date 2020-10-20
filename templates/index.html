@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/home_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="content">
+    <h1>Summarize Articles, Save Time</h1>
+    <h3>Enter text or URL of an Article</h3>
+    <form method='post' action="/">
+        <input type="submit" name="url_input" value="Input URL" class="btn-lg btn-dark"/>
+        <input type="submit" name="text_input" value="Input Text" class="btn-lg btn-dark"/>
+    </form>
+    <img src="static/styles/images/long_to_short_img.png" alt="">
+    <p><strong>*Note: Only works for Article in English*</strong></p>
+</div>
+{% endblock %}

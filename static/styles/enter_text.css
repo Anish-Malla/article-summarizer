@@ -1,0 +1,13 @@
+body{
+    background-color: #F4F6F9;
+}
+
+#content{
+    margin: 200px auto;
+    text-align: center;
+    width: 50%;
+}
+
+.btn{
+    margin-top: 5px;
+}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/enter_text.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="content">
+    <h1>Enter Text</h1>
+
+    <form action="#" method='post'>
+        <textarea name="text" id="entered_text" cols="80" rows="10"></textarea>
+        <br>
+        <input type="submit" name="button" value="Summarize" class="btn btn-dark">
+    </form>
+</div>
+
+{% endblock %}
