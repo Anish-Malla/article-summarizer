@@ -6,6 +6,7 @@ from nltk.corpus import stopwords
 
 import json
 import spacy
+import en_core_web_lg
 from string import punctuation
 
 def download():
@@ -63,7 +64,7 @@ def remove_stop_words(text):
 
 def vectorize_words(text):
     vector_sentence = []
-    nlp = spacy.load("en_core_web_lg")
+    nlp = en_core_web_lg.load()
 
     for s in text:
         vector_sentence.append(nlp(s))
