@@ -1,4 +1,3 @@
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.0/en_core_web_sm-2.3.0.tar.gz
 beautifulsoup4==4.9.3
 blis==0.4.1
 catalogue==1.0.0
@@ -43,3 +42,4 @@ tqdm==4.50.2
 urllib3==1.25.11
 wasabi==0.8.0
 Werkzeug==1.0.1
+https://github.com/explosion/spacy-models/releases/download/en_core_web_md-2.3.1/en_core_web_md-2.3.1.tar.gz

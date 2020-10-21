@@ -62,7 +62,7 @@ def remove_stop_words(text):
 
 def vectorize_words(text):
     vector_sentence = []
-    nlp = spacy.load('en_core_web_sm')
+    nlp = spacy.load('en_core_web_md')
 
     for s in text:
         vector_sentence.append(nlp(s))
@@ -118,7 +118,7 @@ def get_sentences(word_count, sent):
                 res += sent[x] + " "
         d[val] = res
 
-    return json.dumps(d, indent=4)
+    return d
 
 def run(long_text):
     tokenized_long_text = tokenization(long_text)

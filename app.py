@@ -28,7 +28,9 @@ def enter_url():
         url = request.form['url']
         text = get_text_from_url(url)
         summary_texts = text_rank.summarize(text)
-        return redirect(url_for("display", texts=summary_texts))
+        with open("summary_texts.json", "w") as f:
+            json.dump(summary_texts, f)
+        return redirect(url_for("display"))
     elif request.method == 'GET':
         return render_template('url_entry.html')
 
@@ -37,20 +39,23 @@ def enter_text():
     if request.method == 'POST':
         text = request.form['text']
         summary_texts = text_rank.summarize(text)
-        return redirect(url_for("display", texts=summary_texts))
+        with open("summary_texts.json", "w") as f:
+            json.dump(summary_texts, f)
+        return redirect(url_for("display"))
     elif request.method == 'GET':
         return render_template("text_entry.html")
 
-@app.route('/display_summary', methods = ['POST'])
+@app.route('/display_summary', methods = ['GET', 'POST'])
 def display():
-    texts = json.loads(request.args['texts'])
+    with open('summary_texts.json') as json_file:
+        texts = json.load(json_file)
     if request.method == 'POST':
         chosen_summary = request.form.get('summaries')
         read_time = round((len(texts[chosen_summary].split()) / 250), 2)
         return render_template("display_summary.html", summary=texts[chosen_summary],
                                drop_options=[x for x in texts.keys()], summary_time=read_time,
                                current_choice=chosen_summary)
-    else:
+    elif request.method == 'GET':
         return render_template("display_summary.html", summary="Choose a summary. 0 refers to the orignal text. \n Higher the number, shorter the summary.",
                                drop_options=[x for x in texts.keys()], summary_time=0)
 if __name__ == "__main__":
