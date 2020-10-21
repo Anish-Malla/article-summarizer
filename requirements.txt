@@ -31,5 +31,5 @@ tldextract==3.0.0
 tqdm==4.50.2
 urllib3==1.25.11
 Werkzeug==1.0.1
-spacy==2.3.2
+spacy==2.0.10
 https://github.com/explosion/spacy-models/releases/download/en_core_web_md-2.0.0/en_core_web_md-2.0.0.tar.gz#egg=en_core_web_md==2.0.0

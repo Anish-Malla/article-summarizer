@@ -14,8 +14,6 @@ def download():
     nltk.download("averaged_perceptron_tagger")
     nltk.download("wordnet")
     nltk.download('stopwords')
-    # spacy
-    # spacy.load("en_core_web_lg")
 
 def tokenization(text):
     return sent_tokenize(text)
@@ -38,7 +36,6 @@ def lemmatisation(text):
         lemmatized_sentence = []
         for word, tag in wordnet_tagged:
             if tag:
-                # else use the tag to lemmatize the token
                 lemmatized_sentence.append(lemmatizer.lemmatize(word, tag))
         return " ".join(lemmatized_sentence)
 
@@ -51,11 +48,13 @@ def lemmatisation(text):
 def remove_stop_words(text):
     final_sentence = []
     stop_words = set(stopwords.words('english'))
+    special_chars = set(punctuation)
+    special_chars.add('’')
 
     for s in text:
         temp = []
         for word in s.split():
-            if word not in stop_words:
+            if word not in stop_words and not in special_chars:
                 temp.append(word)
         final_sentence.append(" ".join(temp))
 
@@ -70,16 +69,13 @@ def vectorize_words(text):
 
     graph = {}
 
-    special_chars = set(punctuation)
-    special_chars.add('’')
-
     for y in vector_sentence:
         for x in y:
-            if not x.has_vector or x.text in special_chars:
+            if not x.has_vector:
                 break
 
             for z in y:
-                if not z.has_vector or z.text in special_chars or z.text == x.text:
+                if not z.has_vector or z.text == x.text:
                     break
 
                 if x.text not in graph:
@@ -126,8 +122,8 @@ def get_sentences(word_count, sent):
 
 def run(long_text):
     tokenized_long_text = tokenization(long_text)
-    lemmatised_text = lemmatisation(tokenized_long_text)
-    final_long_text = remove_stop_words(lemmatised_text)
+    final_long_text = remove_stop_words(tokenized_long_text)
+    lemmatised_text = lemmatisation(final_long_text)
     vectorised_words_dict = vectorize_words(final_long_text)
     key_words = get_key_words(vectorised_words_dict)
     sentence_importance = keyword_count_in_sentences(key_words, lemmatised_text)
