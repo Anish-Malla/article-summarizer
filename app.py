@@ -41,7 +41,7 @@ def enter_text():
     elif request.method == 'GET':
         return render_template("text_entry.html")
 
-@app.route('/display_summary', methods = ['GET', 'POST'])
+@app.route('/display_summary', methods = ['POST'])
 def display():
     texts = json.loads(request.args['texts'])
     if request.method == 'POST':
@@ -50,7 +50,7 @@ def display():
         return render_template("display_summary.html", summary=texts[chosen_summary],
                                drop_options=[x for x in texts.keys()], summary_time=read_time,
                                current_choice=chosen_summary)
-    elif request.method == 'GET':
+    else:
         return render_template("display_summary.html", summary="Choose a summary. 0 refers to the orignal text. \n Higher the number, shorter the summary.",
                                drop_options=[x for x in texts.keys()], summary_time=0)
 if __name__ == "__main__":
