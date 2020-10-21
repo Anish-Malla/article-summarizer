@@ -42,4 +42,4 @@ tqdm==4.50.2
 urllib3==1.25.11
 wasabi==0.8.0
 Werkzeug==1.0.1
-https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
+https://github.com/explosion/spacy-models/releases/download/en_core_web_md-2.3.1/en_core_web_md-2.3.1.tar.gz
