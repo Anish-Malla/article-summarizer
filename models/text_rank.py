@@ -54,7 +54,7 @@ def remove_stop_words(text):
     for s in text:
         temp = []
         for word in s.split():
-            if word not in stop_words and not in special_chars:
+            if word not in stop_words and word not in special_chars:
                 temp.append(word)
         final_sentence.append(" ".join(temp))
 
@@ -130,5 +130,5 @@ def run(long_text):
     return get_sentences(sentence_importance, tokenized_long_text)
 
 def summarize(text):
-    download()
+    # download()
     return run(text)
