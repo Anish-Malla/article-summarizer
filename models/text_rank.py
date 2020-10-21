@@ -62,7 +62,7 @@ def remove_stop_words(text):
 
 def vectorize_words(text):
     vector_sentence = []
-    nlp = spacy.load('en_core_web_md')
+    nlp = spacy.load('en_core_web_lg')
 
     for s in text:
         vector_sentence.append(nlp(s))
@@ -127,7 +127,7 @@ def run(long_text):
     vectorised_words_dict = vectorize_words(final_long_text)
     key_words = get_key_words(vectorised_words_dict)
     sentence_importance = keyword_count_in_sentences(key_words, lemmatised_text)
-    return get_sentences(sentence_importance, tokenized_long_text)
+    return (tokenized_long_text, sentence_importance)
 
 def summarize(text):
     # download()
