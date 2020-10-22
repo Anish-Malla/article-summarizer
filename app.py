@@ -2,7 +2,10 @@ from flask import Flask, redirect
 from flask import render_template
 from flask import url_for
 from flask import request, session
-import json
+
+from rq import Queue
+from rq.job import Job
+from worker import conn
 
 from models import text_rank
 from models.text_from_url import get_text_from_url
@@ -28,10 +31,11 @@ def enter_url():
     if request.method == 'POST':
         url = request.form['url']
         text = get_text_from_url(url)
-        sentences, session["sent_importance"] = text_rank.summarize(text)
-        with open("sentences.txt", 'w') as f:
-            for s in sentences:
-                f.write(str(s) + '\n')
+
+        q = Queue(connection=conn)
+        job = q.enqueue(text_rank.summarize, text)
+        session["job_id"] = job.get_id()
+
         return redirect(url_for("display"))
     elif request.method == 'GET':
         return render_template('url_entry.html')
@@ -40,19 +44,23 @@ def enter_url():
 def enter_text():
     if request.method == 'POST':
         text = request.form['text']
-        sentences, session["sent_importance"] = text_rank.summarize(text)
-        with open("sentences.txt", 'w') as f:
-            for s in sentences:
-                f.write(str(s) + '\n')
+
+        q = Queue(connection=conn)
+        job = q.enqueue(text_rank.summarize, text)
+        session["job_id"] = job.get_id()
+
         return redirect(url_for("display"))
+
     elif request.method == 'GET':
         return render_template("text_entry.html")
 
 @app.route('/display_summary', methods = ['GET', 'POST'])
 def display():
-    with open("sentences.txt", 'r') as f:
-        full_text = [line.rstrip('\n') for line in f]
-    sent_importance = session["sent_importance"]
+    job = Job.fetch(session["job_id"], connection=conn)
+    while job.is_finished == False:
+        pass
+    full_text, sent_importance = job.result
+
     if request.method == 'POST':
         chosen_summary_num = request.form.get('summaries')
         chosen_summary = " ".join([s for s, count in zip(full_text, sent_importance) if int(count) >= int(chosen_summary_num)])

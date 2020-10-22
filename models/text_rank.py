@@ -4,7 +4,6 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
 
-import json
 import spacy
 from string import punctuation
 
