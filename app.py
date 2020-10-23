@@ -2,6 +2,7 @@ from flask import Flask, redirect
 from flask import render_template
 from flask import url_for
 from flask import request, session
+import time
 
 from rq import Queue
 from rq.job import Job
@@ -54,14 +55,26 @@ def enter_text():
     elif request.method == 'GET':
         return render_template("text_entry.html")
 
+@app.route("/loading")
+def loader():
+    job = Job.fetch(session["job_id"], connection=conn)
+    if job.is_finished == False:
+        return redirect(url_for(loader))
+    else:
+        return redirect(url_for(display))
+
 @app.route('/display_summary', methods = ['GET', 'POST'])
 def display():
     job = Job.fetch(session["job_id"], connection=conn)
-    while job.is_finished == False:
-        pass
-    full_text, sent_importance = job.result
+    # while job.is_finished == False:
+    #     print("working")
+    # full_text, sent_importance = job.result
 
     if request.method == 'POST':
+        if job.is_finished == False:
+            return "PLease Wait a little Longer"
+        full_text, sent_importance = job.result
+
         chosen_summary_num = request.form.get('summaries')
         chosen_summary = " ".join([s for s, count in zip(full_text, sent_importance) if int(count) >= int(chosen_summary_num)])
         read_time = round((len(chosen_summary.split()) / 250), 2)
@@ -80,9 +93,14 @@ def display():
 
         return render_template("display_summary.html", summary=chosen_summary,
                                drop_options=drop_options,
-                               summary_time=read_time, title_display=title_display)
+                               summary_time=read_time, title_display=title_display,
+                               loading=False)
     elif request.method == 'GET':
+        if job.is_finished == False:
+            time.sleep(5)
+            return redirect(url_for("display"))
         return render_template("display_summary.html", summary="Choose a summary. 0 refers to the orignal text. \n Higher the number, shorter the summary.",
-                               drop_options=[x for x in set(sent_importance)], summary_time=0)
+                               drop_options=[1,2,3], summary_time=0, job=job,
+                               loading=False)
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
