@@ -55,24 +55,11 @@ def enter_text():
     elif request.method == 'GET':
         return render_template("text_entry.html")
 
-@app.route("/loading")
-def loader():
-    job = Job.fetch(session["job_id"], connection=conn)
-    if job.is_finished == False:
-        return redirect(url_for(loader))
-    else:
-        return redirect(url_for(display))
-
 @app.route('/display_summary', methods = ['GET', 'POST'])
 def display():
     job = Job.fetch(session["job_id"], connection=conn)
-    # while job.is_finished == False:
-    #     print("working")
-    # full_text, sent_importance = job.result
 
     if request.method == 'POST':
-        if job.is_finished == False:
-            return "PLease Wait a little Longer"
         full_text, sent_importance = job.result
 
         chosen_summary_num = request.form.get('summaries')
