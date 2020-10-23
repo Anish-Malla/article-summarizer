@@ -1,8 +1,10 @@
 from flask import Flask, redirect
 from flask import render_template
 from flask import url_for
-from flask import request, session
+from flask import request
+
 import time
+import os
 
 from rq import Queue
 from rq.job import Job
@@ -12,7 +14,7 @@ from models import text_rank
 from models.text_from_url import get_text_from_url
 
 app = Flask(__name__)
-app.secret_key = "ANISH"
+app.secret_key = os.environ.get('SECRET_KEY')
 
 @app.route('/', methods = ['GET', 'POST'])
 def home():
@@ -35,9 +37,8 @@ def enter_url():
 
         q = Queue(connection=conn)
         job = q.enqueue(text_rank.summarize, text)
-        session["job_id"] = job.get_id()
-
-        return redirect(url_for("display"))
+        jobid = job.get_id()
+        return redirect(url_for("display", job_id_=jobid))
     elif request.method == 'GET':
         return render_template('url_entry.html')
 
@@ -48,16 +49,17 @@ def enter_text():
 
         q = Queue(connection=conn)
         job = q.enqueue(text_rank.summarize, text)
-        session["job_id"] = job.get_id()
-
-        return redirect(url_for("display"))
+        jobid = job.get_id()
+        return redirect(url_for("display", job_id_=jobid))
 
     elif request.method == 'GET':
         return render_template("text_entry.html")
 
 @app.route('/display_summary', methods = ['GET', 'POST'])
 def display():
-    job = Job.fetch(session["job_id"], connection=conn)
+    jobid = request.args['job_id_']
+    # print(type(jobid))
+    job = Job.fetch(jobid, connection=conn)
 
     if request.method == 'POST':
         full_text, sent_importance = job.result
@@ -83,8 +85,8 @@ def display():
                                summary_time=read_time, title_display=title_display)
     elif request.method == 'GET':
         if job.is_finished == False:
-            time.sleep(5)
-            return redirect(url_for("display"))
+            time.sleep(20)
+            return redirect(url_for("display", job_id_=jobid))
         _, sent_importance = job.result
         return render_template("display_summary.html", summary="Choose a summary. 0 refers to the orignal text. \n Higher the number, shorter the summary.",
                                drop_options=[x for x in set(sent_importance)], summary_time=0, job=job)
