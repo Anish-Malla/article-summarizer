@@ -80,15 +80,13 @@ def display():
 
         return render_template("display_summary.html", summary=chosen_summary,
                                drop_options=drop_options,
-                               summary_time=read_time, title_display=title_display,
-                               loading=False)
+                               summary_time=read_time, title_display=title_display)
     elif request.method == 'GET':
         if job.is_finished == False:
             time.sleep(5)
             return redirect(url_for("display"))
         _, sent_importance = job.result
         return render_template("display_summary.html", summary="Choose a summary. 0 refers to the orignal text. \n Higher the number, shorter the summary.",
-                               drop_options=[x for x in set(sent_importance)], summary_time=0, job=job,
-                               loading=False)
+                               drop_options=[x for x in set(sent_importance)], summary_time=0, job=job)
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
