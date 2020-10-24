@@ -15,41 +15,61 @@ def download():
     nltk.download('stopwords')
 
 def tokenization(text):
+    """
+    Unedited text converted to a list of sentences
+    """
     return sent_tokenize(text)
 
 def lemmatisation(text):
+    """
+    Each sentence lemmatized
+    """
     lemmatizer = WordNetLemmatizer()
 
-    # function to convert nltk tag to wordnet tag
     def nltk_tag_to_wordnet_tag(nltk_tag):
+        """
+        Converts NLTK tag to wordnet tag
+        """
+        # Only consider of its a noun
         if nltk_tag == 'NN' or nltk_tag == 'NNS':
             return wordnet.NOUN
         else:
             return None
 
     def lemmatize_sentence(sentence):
-        # tokenize the sentence and find the POS tag for each token
+        """
+        Lemmatizes a specific sentence
+        """
+        # tokenize sentence (getting each word) and getting its POS tag
         nltk_tagged = nltk.pos_tag(nltk.word_tokenize(sentence))
         # tuple of (token, wordnet_tag)
         wordnet_tagged = map(lambda x: (x[0], nltk_tag_to_wordnet_tag(x[1])), nltk_tagged)
         lemmatized_sentence = []
+
         for word, tag in wordnet_tagged:
             if tag:
+                # only if its a noun
                 lemmatized_sentence.append(lemmatizer.lemmatize(word, tag))
+
         return " ".join(lemmatized_sentence)
 
     lem_sentence = []
+    # Iterate through each sentence and run it through lemmatizer
     for s in text:
         lem_sentence.append(lemmatize_sentence(s))
 
     return lem_sentence
 
 def remove_stop_words(text):
+    """
+    Given sentences the stop words and punctuations are removed
+    """
     final_sentence = []
     stop_words = set(stopwords.words('english'))
     special_chars = set(punctuation)
     special_chars.add('’')
 
+    # Iterate through each word in each of the sentences and remove the stop words
     for s in text:
         temp = []
         for word in s.split():
@@ -60,44 +80,58 @@ def remove_stop_words(text):
     return final_sentence
 
 def vectorize_words(text):
+    """
+    Converting each word to a vector and returns dictionary with a word and its average similarity value
+    """
     vector_sentence = []
     nlp = spacy.load('en_core_web_md')
 
+    # convert to nlp object
     for s in text:
         vector_sentence.append(nlp(s))
 
     graph = {}
 
-    for y in vector_sentence:
-        for x in y:
-            if not x.has_vector:
+    # Comparing each word in a sentence with every other word in the sentence
+    for sentence in vector_sentence:
+        for word1 in sentence:
+            if not word1.has_vector:
                 break
 
-            for z in y:
-                if not z.has_vector or z.text == x.text:
+            for word2 in sentence:
+                if not word2.has_vector or word2.text == word1.text:
                     break
 
-                if x.text not in graph:
-                    graph[x.text] = 0
+                if word1.text not in graph:
+                    graph[word1.text] = 0
 
-                # TAKING AVERAGE
-                graph[x.text] = float((graph[x.text] + z.similarity(x)) / 2)
+                # Taking average and adding to dictionary
+                graph[word1.text] = float((graph[word1.text] + word2.similarity(word1)) / 2)
 
     return graph
 
 def get_key_words(vector_words_dict):
+    """
+    Given dictionary of each word and its similarity value, return the top 20 % of keywords
+    """
     top_words = []
     for word, similarity in vector_words_dict.items():
         top_words.append((word, similarity))
 
     top_words = sorted(top_words, key=lambda x: x[1], reverse=True)
 
-    num = round(len(top_words) * 0.2)
+    num = round(len(top_words) * 0.2) # top 20 % words counter for
     if num < 1:
         num = 1
     return [top_words[x][0] for x in range(num)]
 
 def keyword_count_in_sentences(keywords, sentences):
+    """
+    Given list of keywords, gives each sentence a score depending on the frequency of keyowrds in that sentence
+
+    Returns:
+         list : each index represents the count of a sentence at that index
+    """
     count = [0] * len(sentences)
 
     for indx in range(len(sentences)):
@@ -106,20 +140,13 @@ def keyword_count_in_sentences(keywords, sentences):
                 count[indx] += 1
     return count
 
-def get_sentences(word_count, sent):
-    vals = set(word_count)
-    d = {int(k): "" for k in vals}
-
-    for val in vals:
-        res = ""
-        for x in range(len(word_count)):
-            if word_count[x] >= val:
-                res += sent[x] + " "
-        d[val] = res
-
-    return d
-
 def run(long_text):
+    """
+    Given unedited text, the sentences are marked by importance
+
+    Returns:
+        (list, list) : (tokenized sentences, importance of each sentence)
+    """
     tokenized_long_text = tokenization(long_text)
     final_long_text = remove_stop_words(tokenized_long_text)
     lemmatised_text = lemmatisation(final_long_text)
@@ -129,5 +156,4 @@ def run(long_text):
     return (tokenized_long_text, sentence_importance)
 
 def summarize(text):
-    # download()
     return run(text)
