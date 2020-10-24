@@ -24,4 +24,4 @@ https://article-summarizer-anish.herokuapp.com/
 
 ## Contributors
 
-* [@AnishMalla](https://github.com/scottydocs) 
+* [@AnishMalla](https://github.com/Anish-Malla) 
