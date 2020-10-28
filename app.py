@@ -28,6 +28,13 @@ def page_not_found():
     """
     return render_template('404.html'), 404
 
+@app.errorhandler(310)
+def too_many_redirects():
+    """
+    Handling too many redirects 310 error
+    """
+    return render_template('310.html'), 310
+
 @app.route('/', methods = ['GET', 'POST'])
 def home():
     """

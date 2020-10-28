@@ -16,6 +16,31 @@ This application is hosted on heroku:
 
 https://article-summarizer-anish.herokuapp.com/
 
+## How to run the app locally
+
+**Requirements:** python-3.8.6
+
+* Clone the GitHub repo
+```
+git clone https://github.com/Anish-Malla/article-summarizer
+```
+* Install required libraries
+```
+pip3 install -r requirements.txt
+```
+* Run a redis server locally
+```
+Instruction to run redis server: https://redis.io/topics/quickstart
+``` 
+* Running worker process for redis (On a new terminal)
+```
+python3 worker.py
+```
+* Run the flask application on http://localhost:5000/ (On a new terminal)
+```
+python3 app.py
+```
+
 ## How it works
 
 1. Getting the article's text (comes from URL or text inputted by user)
